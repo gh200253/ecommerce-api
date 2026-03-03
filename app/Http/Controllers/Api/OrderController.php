@@ -31,13 +31,8 @@ class OrderController extends Controller
         }
 
         try {
-            // 1. هنا بنعرف المتغير اللي كان ناقص (بنجيب بيانات العميل الحالي)
             $user = auth()->user(); 
-            
-            // 2. بنعمل الأوردر (لاحظي إننا استخدمنا $user->id بدل الكود القديم)
             $order = $this->orderService->checkout($user->id, $request->shipping_address, $request->items);
-            
-            // 3. بنرمي الأوردر وبيانات العميل للطابور عشان الإيميل يتبعت
             SendOrderEmailJob::dispatch($order, $user);
 
             return $this->successResponse($order, 'تم إنشاء الطلب بنجاح', 201);
@@ -50,7 +45,6 @@ class OrderController extends Controller
 
     public function index()
     {
-        // بنجيب الـ ID بتاع اليوزر اللي مسجل دخول بالتوكن حالياً
         $userId = auth()->id(); 
         
         $orders = $this->orderService->getOrdersForUser($userId);

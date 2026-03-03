@@ -20,7 +20,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed', // confirmed يعني لازم يبعت password_confirmation
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
@@ -46,7 +46,7 @@ class AuthController extends Controller
       $result = $this->authService->loginUser($request->all());
 
       if (!$result) {
-          return $this->errorResponse('بيانات الدخول غير صحيحة', 401); // 401 Unauthorized
+          return $this->errorResponse('بيانات الدخول غير صحيحة', 401);
       }
 
       return $this->successResponse($result, 'تم تسجيل الدخول بنجاح');

@@ -21,7 +21,6 @@ class CategoryService
 
     public function createCategory(array $data)
     {
-        // إنشاء الـ Slug تلقائياً من اسم القسم
         $data['slug'] = Str::slug($data['name']);
         
         return $this->categoryRepo->create($data);

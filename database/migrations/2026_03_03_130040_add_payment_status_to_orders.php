@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            // بنضيف حالة الدفع (unpaid, paid, failed)
             $table->string('payment_status')->default('unpaid')->after('status');
         });
     }

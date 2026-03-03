@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            // هنضيفه بعد الوصف، وهنخليه nullable عشان لو منتج ملوش صورة
             $table->string('image')->nullable()->after('description'); 
         });
     }

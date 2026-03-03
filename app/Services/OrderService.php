@@ -23,7 +23,6 @@ class OrderService
         foreach ($cartItems as $cartItem) {
             $product = Product::find($cartItem['product_id']);
             if (!$product || $product->stock_quantity < $cartItem['quantity']) {
-                // لو الكمية صفر، نقوله خلصان، لو فيه كمية بس أقل من اللي طلبها نقوله المتاح كام
                 if ($product->stock_quantity == 0) {
                     throw new Exception("عذراً، المنتج {$product->name} نفد من المخزون تماماً.");
                 } else {
@@ -31,10 +30,8 @@ class OrderService
                 }
             }
 
-            // حساب الإجمالي
             $totalAmount += ($product->price * $cartItem['quantity']);
             
-            // تجهيز الداتا للـ Repository
             $processedItems[] = [
                 'product_id' => $product->id,
                 'quantity' => $cartItem['quantity'],
@@ -42,7 +39,6 @@ class OrderService
             ];
         }
 
-        // إرسال البيانات للـ Repository للحفظ النهائي
         return $this->orderRepo->createOrder($userId, $totalAmount, $shippingAddress, $processedItems);
     }
 

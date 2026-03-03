@@ -12,19 +12,15 @@ class OrderRepository implements OrderRepositoryInterface
 {
     public function createOrder($userId, $totalAmount, $shippingAddress, $items)
     {
-        // هنبدأ الـ Transaction
         return DB::transaction(function () use ($userId, $totalAmount, $shippingAddress, $items) {
-            
-            // 1. إنشاء الطلب الأساسي
             $order = Order::create([
                 'user_id' => $userId,
-                'order_number' => 'ORD-' . strtoupper(uniqid()), // رقم مميز وعشوائي
+                'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'status' => 'pending',
                 'total_amount' => $totalAmount,
                 'shipping_address' => $shippingAddress,
             ]);
 
-            // 2. إضافة تفاصيل الطلب وخصم الكمية
             foreach ($items as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -34,11 +30,9 @@ class OrderRepository implements OrderRepositoryInterface
                     'total_price' => $item['quantity'] * $item['unit_price'],
                 ]);
 
-                // خصم الكمية المباعة من جدول المنتجات
                 Product::where('id', $item['product_id'])->decrement('stock_quantity', $item['quantity']);
             }
 
-            // إرجاع الأوردر مع تفاصيله
             return $order->load('items'); 
         });
     }
@@ -46,8 +40,8 @@ class OrderRepository implements OrderRepositoryInterface
     public function getUserOrders($userId)
     {
         return Order::where('user_id', $userId)
-                    ->with('items.product') // Eager Loading لحل مشكلة N+1
-                    ->orderBy('created_at', 'desc') // أحدث الطلبات تظهر الأول
+                    ->with('items.product')
+                    ->orderBy('created_at', 'desc')
                     ->get();
     }
 }

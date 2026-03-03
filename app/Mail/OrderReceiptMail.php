@@ -12,7 +12,7 @@ class OrderReceiptMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $order; // هنمرر الأوردر هنا
+    public $order;
 
     public function __construct($order)
     {
@@ -28,7 +28,6 @@ class OrderReceiptMail extends Mailable
 
     public function content(): Content
     {
-        // ده ملف الـ HTML اللي هيكون فيه شكل الإيميل
         return new Content(
             view: 'emails.order_receipt',
         );

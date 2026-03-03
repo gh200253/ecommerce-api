@@ -13,7 +13,6 @@ class Product extends Model
         'category_id', 'name', 'slug', 'description', 
         'price', 'stock_quantity', 'is_active' , 'image'];
 
-    // علاقة المنتج بالقسم
     public function category()
     {
         return $this->belongsTo(Category::class);

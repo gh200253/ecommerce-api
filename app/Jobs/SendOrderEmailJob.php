@@ -26,7 +26,6 @@ class SendOrderEmailJob implements ShouldQueue
 
     public function handle(): void
     {
-        // هنا بنأمر السيرفر يبعت الإيميل الفعلي
         Mail::to($this->user->email)->send(new OrderReceiptMail($this->order));
     }
 }

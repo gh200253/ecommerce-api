@@ -1,59 +1,78 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Enterprise E-Commerce RESTful API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A robust, scalable, and secure E-Commerce RESTful API built with Laravel 11. This project demonstrates enterprise-level backend architecture, emphasizing security, optimal database performance, and clean code principles.
 
-## About Laravel
+## System Architecture & Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* **Authentication & Security:** JWT-like stateless authentication using Laravel Sanctum.
+* **Role-Based Access Control (RBAC):** Implementation of Spatie Laravel-Permission to establish strict boundaries between `Admin` and `Customer` privileges.
+* **Advanced Data Filtering:** Dynamic product filtering (by category, price range, and search terms) utilizing optimized Eloquent queries.
+* **Asset Management:** Secure multipart file uploading, validation, and local storage handling for product images.
+* **Asynchronous Processing:** Background job processing using Laravel Queues for non-blocking operations, such as sending order receipt emails.
+* **Payment Gateway Integration:** A dedicated webhook receiver to handle simulated external payment gateway callbacks and automatically update order statuses.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technology Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* **Framework:** Laravel 11 (PHP 8.2+)
+* **Database:** MySQL / PostgreSQL
+* **Authentication:** Laravel Sanctum
+* **Authorization:** Spatie Laravel-Permission
+* **Testing & Documentation:** Postman
 
-## Learning Laravel
+## API Endpoints Overview
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Public Routes (No Auth Required)
+* `POST /api/register` - Register a new customer
+* `POST /api/login` - Authenticate user and receive token
+* `GET /api/categories` - List all categories
+* `GET /api/products` - List all products (supports query parameters: `search`, `category_id`, `min_price`, `max_price`)
+* `GET /api/products/{id}` - Retrieve a single product
+* `POST /api/webhooks/payment` - Handle external payment success/failure callbacks
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Protected Routes (Requires Bearer Token)
+* `POST /api/logout` - Revoke current token
+* `GET /api/user` - Retrieve authenticated user profile
+* `POST /api/checkout` - Place a new order
+* `GET /api/orders` - Retrieve order history for the authenticated user
 
-## Laravel Sponsors
+### Admin Only Routes (Requires Admin Role + Bearer Token)
+* `POST /api/categories` - Create a new category
+* `POST /api/products` - Create a new product (supports `multipart/form-data` for images)
+* `PUT /api/products/{id}` - Update an existing product
+* `DELETE /api/products/{id}` - Delete a product
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Local Setup Instructions
 
-### Premium Partners
+1. Clone the repository and install dependencies:
+    ```bash
+    composer install
+    ```
+2. Configure environment variables:
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+3. Run database migrations and seeders (initializes roles and admin user):
+    ```bash
+    php artisan migrate --seed
+    ```
+4. Create the symbolic link for accessible storage:
+    ```bash
+    php artisan storage:link
+    ```
+5. Start the application and queue worker:
+    ```bash
+    php artisan queue:work
+    php artisan serve
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Deployment (Render.com)
 
-## Contributing
+- Web Service: Laravel 11 + PostgreSQL
+- Queue Worker: `php artisan queue:work`
+- Storage: `php artisan storage:link` run on deploy
+- Environment: `APP_ENV=production`, `APP_DEBUG=false`, `DB_CONNECTION=pgsql`, `QUEUE_CONNECTION=database`, `MAIL_*` for email jobs
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Postman Documentation
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[View API collection on Postman](https://ecocollect.postman.co/workspace/eCommerce-api~07ed5c9f-0407-43ac-881a-2c343151d6b4/collection/33859224-43616472-669f-4149-a2c2-41c1757b42f6?action=share&creator=33859224)

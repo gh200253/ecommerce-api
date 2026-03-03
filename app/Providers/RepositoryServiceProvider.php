@@ -11,14 +11,6 @@ use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\OrderRepository;
 class RepositoryServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
-
-
-     // ضيفي الاستدعاء فوق
-
-// جوه دالة register ضيفي السطر ده:
     public function register(): void
     {
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
@@ -26,11 +18,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
-        //
     }
 }

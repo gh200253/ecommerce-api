@@ -53,7 +53,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validation بسيط للتعديل
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'price' => 'sometimes|numeric|min:0',
